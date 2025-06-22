@@ -2,9 +2,8 @@
 
 namespace Webkul\Warehouse\Repositories;
 
-use Webkul\Core\Eloquent\Repository;
-
-class LocationRepository extends Repository
+use App\Repositories\TenantAwareRepository;
+class LocationRepository extends TenantAwareRepository
 {
     /**
      * Searchable fields

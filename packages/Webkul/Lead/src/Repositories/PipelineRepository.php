@@ -2,11 +2,10 @@
 
 namespace Webkul\Lead\Repositories;
 
+use App\Repositories\TenantAwareRepository;
 use Illuminate\Container\Container;
 use Illuminate\Support\Str;
-use Webkul\Core\Eloquent\Repository;
-
-class PipelineRepository extends Repository
+class PipelineRepository extends TenantAwareRepository
 {
     /**
      * Create a new repository instance.

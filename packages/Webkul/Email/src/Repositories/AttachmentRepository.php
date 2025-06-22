@@ -2,13 +2,13 @@
 
 namespace Webkul\Email\Repositories;
 
+use App\Repositories\TenantAwareRepository;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-use Webkul\Core\Eloquent\Repository;
 use Webkul\Email\Contracts\Attachment;
 use Webkul\Email\Contracts\Email;
 
-class AttachmentRepository extends Repository
+class AttachmentRepository extends TenantAwareRepository
 {
     /**
      * Specify model class name.

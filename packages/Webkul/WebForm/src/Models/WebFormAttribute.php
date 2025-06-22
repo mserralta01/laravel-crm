@@ -2,12 +2,16 @@
 
 namespace Webkul\WebForm\Models;
 
+use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 use Webkul\Attribute\Models\AttributeProxy;
 use Webkul\WebForm\Contracts\WebFormAttribute as WebFormAttributeContract;
 
 class WebFormAttribute extends Model implements WebFormAttributeContract
 {
+    
+    use BelongsToTenant;
+
     /**
      * Indicates if the model should be timestamped.
      *

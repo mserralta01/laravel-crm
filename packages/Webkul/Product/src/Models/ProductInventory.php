@@ -2,6 +2,7 @@
 
 namespace Webkul\Product\Models;
 
+use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,6 +12,9 @@ use Webkul\Warehouse\Models\WarehouseProxy;
 
 class ProductInventory extends Model implements ProductInventoryContract
 {
+    
+    use BelongsToTenant;
+
     /**
      * The attributes that are mass assignable.
      *

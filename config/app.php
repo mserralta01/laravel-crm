@@ -59,6 +59,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Application Domain
+    |--------------------------------------------------------------------------
+    |
+    | This is the base domain for your application. Used for multi-tenancy
+    | subdomain routing and domain validation.
+    |
+     */
+
+    'domain' => env('APP_DOMAIN', 'localhost'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Admin URL
     |--------------------------------------------------------------------------
     |
@@ -196,6 +208,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\TenantServiceProvider::class,
 
         /*
          * Webkul Service Providers...
@@ -232,6 +245,8 @@ return [
     |
      */
 
-    'aliases' => Facade::defaultAliases()->merge([])->toArray(),
+    'aliases' => Facade::defaultAliases()->merge([
+        'TenantUrl' => App\Facades\TenantUrl::class,
+    ])->toArray(),
 
 ];

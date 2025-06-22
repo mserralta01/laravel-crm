@@ -2,10 +2,9 @@
 
 namespace Webkul\Activity\Repositories;
 
+use App\Repositories\TenantAwareRepository;
 use Illuminate\Container\Container;
-use Webkul\Core\Eloquent\Repository;
-
-class ActivityRepository extends Repository
+class ActivityRepository extends TenantAwareRepository
 {
     /**
      * Create a new repository instance.

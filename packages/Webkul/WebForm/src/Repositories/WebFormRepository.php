@@ -2,12 +2,12 @@
 
 namespace Webkul\WebForm\Repositories;
 
+use App\Repositories\TenantAwareRepository;
 use Illuminate\Container\Container;
 use Illuminate\Support\Str;
-use Webkul\Core\Eloquent\Repository;
 use Webkul\WebForm\Contracts\WebForm;
 
-class WebFormRepository extends Repository
+class WebFormRepository extends TenantAwareRepository
 {
     /**
      * Create a new repository instance.

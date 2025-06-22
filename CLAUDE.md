@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Krayin CRM is an open-source Laravel-based CRM system with a modular architecture. The application uses Laravel 10 for the backend and Vue.js for the frontend components. It is designed for SMEs and Enterprises for complete customer lifecycle management.
+Krayin CRM is an open-source Laravel-based CRM system with a modular architecture. The application uses Laravel 10 for the backend and Vue.js 3 for the frontend components. It is designed for SMEs and Enterprises for complete customer lifecycle management.
 
 ## Key Commands
 
@@ -53,6 +53,7 @@ npm run build
 php artisan test
 ./vendor/bin/pest
 ./vendor/bin/pest --filter="TestName"
+./vendor/bin/pest --parallel  # Run tests in parallel
 
 # Clear all caches
 php artisan optimize:clear
@@ -90,15 +91,20 @@ The application follows a modular architecture with packages located in `package
 - **Contact**: Person and Organization management
   - Separate entities for persons and organizations
   - Relationship management between contacts
-- **Product**: Product catalog
+- **Product**: Product catalog with inventory
 - **Quote**: Quote generation and management
 - **Email**: Email integration and parsing
   - Sendgrid webhook support
   - IMAP email fetching
+- **Activity**: Activity logging and tracking
 - **Workflow**: Automation workflows
 - **WebForm**: Form builder for lead capture
 - **User**: User and role management
 - **Attribute**: EAV system for custom fields
+- **Tag**: Tagging system for entities
+- **Warehouse**: Inventory management
+- **EmailTemplate**: Email template management
+- **DataGrid**: Reusable data table system
 
 ### Data Flow Pattern
 1. Routes are defined in each package's route files (`Routes/Admin/`)
@@ -125,10 +131,11 @@ DataGrids handle listing pages with built-in features:
 - Extended from `Webkul\DataGrid\DataGrid`
 
 ### Frontend Architecture
-- Vue.js components in `packages/Webkul/Admin/src/Resources/assets/js/`
+- Vue.js 3 components in `packages/Webkul/Admin/src/Resources/assets/js/`
 - Vite for asset bundling (config in `vite.config.js`)
 - Tailwind CSS for styling
 - Custom admin UI components library
+- Dark mode support
 
 ### Vue.js Components
 Key components are prefixed with `v-`:
@@ -155,10 +162,21 @@ The system supports email parsing via Sendgrid webhook. Email configuration is m
 - **Important**: When using DigitalOcean or other managed databases with `sql_require_primary_key=ON`, all tables must have primary keys. Pivot tables should use composite primary keys
 
 ## Testing Approach
-- PHPUnit for unit tests
-- Pest for feature tests
-- Test files located in package-specific `tests/` directories
-- Run specific tests with: `php artisan test --filter TestName`
+- PHPUnit 10.5 configuration in `phpunit.xml`
+- Pest PHP as the primary testing framework
+- Test files located in `tests/` directory
+- Run specific tests with: `./vendor/bin/pest --filter="TestName"`
+- Parallel test execution: `./vendor/bin/pest --parallel`
+- Test helpers available in `tests/Pest.php`:
+  - `getDefaultAdmin()` - Gets the default admin user
+  - `actingAsSanctumAuthenticatedAdmin()` - Sanctum authentication helper
+- E2E testing with Playwright in `packages/Webkul/Admin/tests/e2e-pw/`
+
+## Code Quality
+- Laravel Pint for PHP code style (configured in `pint.json`)
+- Uses Laravel preset with custom alignment rules
+- GitHub Actions CI/CD pipeline (`.github/workflows/ci.yml`)
+- Tests run on PHP 8.2 and 8.3 with MySQL 8.0
 
 ## Custom Attributes System
 The application includes a flexible attributes system allowing custom fields on entities (leads, contacts, products). Attributes are managed through the `Attribute` package and stored using EAV pattern.
@@ -166,8 +184,14 @@ The application includes a flexible attributes system allowing custom fields on 
 ## Configuration
 - Environment variables in `.env`
 - Package configurations in `config/` directory
+- Package registration in `config/concord.php`
 - Core settings managed through admin panel
 - Multi-language support with translations in `packages/*/src/Resources/lang/`
+
+## Authentication
+- Laravel Sanctum for API authentication
+- Role-based access control (ACL)
+- User groups for team management
 
 ## Default Admin Access
 - URL: `/admin/dashboard`
@@ -175,7 +199,7 @@ The application includes a flexible attributes system allowing custom fields on 
 - Password: `admin123`
 
 ## Requirements
-- PHP 8.1 or higher
+- PHP 8.1 or higher (8.2+ recommended)
 - MySQL 5.7.23+ or MariaDB 10.2.7+
 - Node.js 8.11.3 LTS or higher
 - Composer 2.5 or higher

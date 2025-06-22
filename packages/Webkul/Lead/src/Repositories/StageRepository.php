@@ -2,9 +2,8 @@
 
 namespace Webkul\Lead\Repositories;
 
-use Webkul\Core\Eloquent\Repository;
-
-class StageRepository extends Repository
+use App\Repositories\TenantAwareRepository;
+class StageRepository extends TenantAwareRepository
 {
     /**
      * Specify Model class name

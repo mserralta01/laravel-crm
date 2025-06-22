@@ -2,13 +2,12 @@
 
 namespace Webkul\Contact\Repositories;
 
+use App\Repositories\TenantAwareRepository;
 use Illuminate\Container\Container;
 use Webkul\Attribute\Repositories\AttributeRepository;
 use Webkul\Attribute\Repositories\AttributeValueRepository;
 use Webkul\Contact\Contracts\Person;
-use Webkul\Core\Eloquent\Repository;
-
-class PersonRepository extends Repository
+class PersonRepository extends TenantAwareRepository
 {
     /**
      * Searchable fields.

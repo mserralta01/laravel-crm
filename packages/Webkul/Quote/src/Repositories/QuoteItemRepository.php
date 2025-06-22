@@ -2,11 +2,11 @@
 
 namespace Webkul\Quote\Repositories;
 
+use App\Repositories\TenantAwareRepository;
 use Illuminate\Container\Container;
-use Webkul\Core\Eloquent\Repository;
 use Webkul\Product\Repositories\ProductRepository;
 
-class QuoteItemRepository extends Repository
+class QuoteItemRepository extends TenantAwareRepository
 {
     /**
      * Create a new repository instance.

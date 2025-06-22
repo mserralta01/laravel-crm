@@ -2,10 +2,9 @@
 
 namespace Webkul\Automation\Repositories;
 
+use App\Repositories\TenantAwareRepository;
 use Webkul\Automation\Contracts\Workflow;
-use Webkul\Core\Eloquent\Repository;
-
-class WorkflowRepository extends Repository
+class WorkflowRepository extends TenantAwareRepository
 {
     /**
      * Specify Model class name.

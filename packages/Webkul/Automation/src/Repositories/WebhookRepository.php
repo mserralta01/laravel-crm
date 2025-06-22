@@ -2,10 +2,9 @@
 
 namespace Webkul\Automation\Repositories;
 
+use App\Repositories\TenantAwareRepository;
 use Webkul\Automation\Contracts\Webhook;
-use Webkul\Core\Eloquent\Repository;
-
-class WebhookRepository extends Repository
+class WebhookRepository extends TenantAwareRepository
 {
     /**
      * Specify Model class name.

@@ -2,6 +2,7 @@
 
 namespace Webkul\Quote\Models;
 
+use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 use Webkul\Attribute\Traits\CustomAttribute;
 use Webkul\Contact\Models\PersonProxy;
@@ -11,7 +12,7 @@ use Webkul\User\Models\UserProxy;
 
 class Quote extends Model implements QuoteContract
 {
-    use CustomAttribute;
+    use CustomAttribute, BelongsToTenant;
 
     protected $table = 'quotes';
 

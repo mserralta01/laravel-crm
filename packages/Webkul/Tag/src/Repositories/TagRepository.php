@@ -2,9 +2,8 @@
 
 namespace Webkul\Tag\Repositories;
 
-use Webkul\Core\Eloquent\Repository;
-
-class TagRepository extends Repository
+use App\Repositories\TenantAwareRepository;
+class TagRepository extends TenantAwareRepository
 {
     /**
      * Searchable fields

@@ -2,13 +2,13 @@
 
 namespace Webkul\Warehouse\Repositories;
 
+use App\Repositories\TenantAwareRepository;
 use Illuminate\Container\Container;
 use Webkul\Attribute\Repositories\AttributeRepository;
 use Webkul\Attribute\Repositories\AttributeValueRepository;
-use Webkul\Core\Eloquent\Repository;
 use Webkul\Warehouse\Contracts\Warehouse;
 
-class WarehouseRepository extends Repository
+class WarehouseRepository extends TenantAwareRepository
 {
     /**
      * Searchable fields.

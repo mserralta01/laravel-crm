@@ -2,12 +2,16 @@
 
 namespace Webkul\Activity\Models;
 
+use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Webkul\Activity\Contracts\File as FileContract;
 
 class File extends Model implements FileContract
 {
+    
+    use BelongsToTenant;
+
     /**
      * The table associated with the model.
      *

@@ -2,14 +2,13 @@
 
 namespace Webkul\Contact\Repositories;
 
+use App\Repositories\TenantAwareRepository;
 use Illuminate\Container\Container;
 use Illuminate\Support\Facades\DB;
 use Webkul\Attribute\Repositories\AttributeRepository;
 use Webkul\Attribute\Repositories\AttributeValueRepository;
 use Webkul\Contact\Contracts\Organization;
-use Webkul\Core\Eloquent\Repository;
-
-class OrganizationRepository extends Repository
+class OrganizationRepository extends TenantAwareRepository
 {
     /**
      * Create a new repository instance.

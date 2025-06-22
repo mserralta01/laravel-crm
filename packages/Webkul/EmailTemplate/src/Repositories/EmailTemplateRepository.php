@@ -2,9 +2,8 @@
 
 namespace Webkul\EmailTemplate\Repositories;
 
-use Webkul\Core\Eloquent\Repository;
-
-class EmailTemplateRepository extends Repository
+use App\Repositories\TenantAwareRepository;
+class EmailTemplateRepository extends TenantAwareRepository
 {
     /**
      * Specify Model class name

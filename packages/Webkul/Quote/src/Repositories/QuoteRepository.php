@@ -2,14 +2,14 @@
 
 namespace Webkul\Quote\Repositories;
 
+use App\Repositories\TenantAwareRepository;
 use Illuminate\Container\Container;
 use Illuminate\Support\Str;
 use Webkul\Attribute\Repositories\AttributeRepository;
 use Webkul\Attribute\Repositories\AttributeValueRepository;
-use Webkul\Core\Eloquent\Repository;
 use Webkul\Quote\Contracts\Quote;
 
-class QuoteRepository extends Repository
+class QuoteRepository extends TenantAwareRepository
 {
     /**
      * Searchable fields.
