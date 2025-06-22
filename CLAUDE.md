@@ -1,0 +1,183 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project Overview
+
+Krayin CRM is an open-source Laravel-based CRM system with a modular architecture. The application uses Laravel 10 for the backend and Vue.js for the frontend components. It is designed for SMEs and Enterprises for complete customer lifecycle management.
+
+## Key Commands
+
+### Development Setup
+```bash
+# Install PHP dependencies
+composer install
+
+# Install frontend dependencies
+npm install
+
+# Set up environment
+cp .env.example .env
+php artisan key:generate
+
+# Run database migrations and seeders
+php artisan migrate --seed
+php artisan krayin:install
+```
+
+### Production Setup
+```bash
+# Install without dev dependencies
+composer install --no-dev
+
+# Build and optimize
+npm run build
+php artisan optimize
+```
+
+### Development Commands
+```bash
+# Start development server
+php artisan serve
+
+# Watch frontend assets (Vite)
+npm run dev
+
+# Build frontend assets for production
+npm run build
+
+# Run PHP linter
+./vendor/bin/pint
+
+# Run tests
+php artisan test
+./vendor/bin/pest
+./vendor/bin/pest --filter="TestName"
+
+# Clear all caches
+php artisan optimize:clear
+
+# View routes
+php artisan route:list
+
+# Create a new package
+php artisan package:make
+```
+
+## Architecture Overview
+
+### Package-Based Structure
+The application follows a modular architecture with packages located in `packages/Webkul/`. Each package is self-contained with its own:
+- Models, Controllers, and Repositories
+- Database migrations
+- Service providers
+- Configuration files
+- Routes
+- Views and frontend assets
+
+### Core Packages
+- **Core**: Foundation functionality, repositories, and base classes
+  - Base Repository class: `Webkul\Core\Eloquent\Repository`
+  - Core traits and helpers
+  - Configuration management
+- **Admin**: Admin panel UI, controllers, and DataGrids
+  - All UI components in `Resources/assets/js/components/`
+  - Main layout: `Resources/views/components/layouts/index.blade.php`
+  - Route prefix: `/admin`
+- **Lead**: Lead management functionality
+  - Pipeline and stage management
+  - Lead activities and timeline
+- **Contact**: Person and Organization management
+  - Separate entities for persons and organizations
+  - Relationship management between contacts
+- **Product**: Product catalog
+- **Quote**: Quote generation and management
+- **Email**: Email integration and parsing
+  - Sendgrid webhook support
+  - IMAP email fetching
+- **Workflow**: Automation workflows
+- **WebForm**: Form builder for lead capture
+- **User**: User and role management
+- **Attribute**: EAV system for custom fields
+
+### Data Flow Pattern
+1. Routes are defined in each package's route files (`Routes/Admin/`)
+2. Controllers handle requests and use Repositories for data access
+3. Repositories extend `Webkul\Core\Eloquent\Repository` for CRUD operations
+4. Models use Concord for modularity (proxy pattern)
+5. DataGrids provide listing functionality with filtering/sorting
+6. Views use Blade templates with Vue.js components
+
+### Repository Pattern
+All data access uses the Repository pattern:
+```php
+// Example: LeadRepository
+$leadRepository = app(\Webkul\Lead\Repositories\LeadRepository::class);
+$lead = $leadRepository->create($data);
+```
+
+### DataGrid System
+DataGrids handle listing pages with built-in features:
+- Pagination, sorting, and filtering
+- Mass actions
+- Excel export
+- Located in `packages/*/src/DataGrids/`
+- Extended from `Webkul\DataGrid\DataGrid`
+
+### Frontend Architecture
+- Vue.js components in `packages/Webkul/Admin/src/Resources/assets/js/`
+- Vite for asset bundling (config in `vite.config.js`)
+- Tailwind CSS for styling
+- Custom admin UI components library
+
+### Vue.js Components
+Key components are prefixed with `v-`:
+- `<v-datagrid>` - Data table with sorting/filtering
+- `<v-form>` - Form wrapper with validation
+- `<v-modal>` - Modal dialogs
+- `<v-drawer>` - Slide-out panels
+- `<v-dropdown>` - Dropdown menus
+- `<v-tabs>` - Tab navigation
+
+Components are auto-registered globally in `app.js`
+
+## Email Integration
+The system supports email parsing via Sendgrid webhook. Email configuration is managed through:
+- `config/mail.php` - Mail driver settings
+- `config/imap.php` - IMAP configuration for email fetching
+- `.env` - Email credentials and webhook endpoints
+
+## Database Considerations
+- Uses Laravel migrations with modular structure
+- Each package has its own migrations in `Database/Migrations/`
+- Supports MySQL 5.7.23+ or MariaDB 10.2.7+
+- Uses Laravel's query builder and Eloquent ORM
+- **Important**: When using DigitalOcean or other managed databases with `sql_require_primary_key=ON`, all tables must have primary keys. Pivot tables should use composite primary keys
+
+## Testing Approach
+- PHPUnit for unit tests
+- Pest for feature tests
+- Test files located in package-specific `tests/` directories
+- Run specific tests with: `php artisan test --filter TestName`
+
+## Custom Attributes System
+The application includes a flexible attributes system allowing custom fields on entities (leads, contacts, products). Attributes are managed through the `Attribute` package and stored using EAV pattern.
+
+## Configuration
+- Environment variables in `.env`
+- Package configurations in `config/` directory
+- Core settings managed through admin panel
+- Multi-language support with translations in `packages/*/src/Resources/lang/`
+
+## Default Admin Access
+- URL: `/admin/dashboard`
+- Email: `admin@example.com`
+- Password: `admin123`
+
+## Requirements
+- PHP 8.1 or higher
+- MySQL 5.7.23+ or MariaDB 10.2.7+
+- Node.js 8.11.3 LTS or higher
+- Composer 2.5 or higher
+- Apache 2 or NGINX
+- 3GB RAM or higher

@@ -17,6 +17,8 @@ return new class extends Migration
 
             $table->integer('person_id')->unsigned();
             $table->foreign('person_id')->references('id')->on('persons')->onDelete('cascade');
+
+            $table->primary(['person_id', 'activity_id']);
         });
     }
 
@@ -25,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('lead_activities');
+        Schema::dropIfExists('person_activities');
     }
 };
