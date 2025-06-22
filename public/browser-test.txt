@@ -1,0 +1,2 @@
+This file is served from the Laravel CRM directory at /var/www/html/groovecrm/public/
+If you can see this in your browser, the routing issue is fixed!
