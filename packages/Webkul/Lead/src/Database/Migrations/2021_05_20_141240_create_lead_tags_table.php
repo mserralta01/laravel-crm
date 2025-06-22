@@ -19,6 +19,8 @@ return new class extends Migration
 
             $table->integer('lead_id')->unsigned();
             $table->foreign('lead_id')->references('id')->on('leads')->onDelete('cascade');
+
+            $table->primary(['lead_id', 'tag_id']);
         });
     }
 

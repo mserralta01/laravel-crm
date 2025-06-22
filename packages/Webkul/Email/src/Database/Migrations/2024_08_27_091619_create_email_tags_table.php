@@ -17,6 +17,8 @@ return new class extends Migration
 
             $table->integer('email_id')->unsigned();
             $table->foreign('email_id')->references('id')->on('emails')->onDelete('cascade');
+
+            $table->primary(['email_id', 'tag_id']);
         });
     }
 

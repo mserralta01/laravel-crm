@@ -19,6 +19,8 @@ return new class extends Migration
 
             $table->integer('warehouse_id')->unsigned();
             $table->foreign('warehouse_id')->references('id')->on('warehouses')->onDelete('cascade');
+
+            $table->primary(['warehouse_id', 'tag_id']);
         });
     }
 
