@@ -2,9 +2,8 @@
 
 namespace Webkul\Attribute\Repositories;
 
-use Webkul\Core\Eloquent\Repository;
-
-class AttributeOptionRepository extends Repository
+use App\Repositories\TenantAwareRepository;
+class AttributeOptionRepository extends TenantAwareRepository
 {
     /**
      * Specify Model class name

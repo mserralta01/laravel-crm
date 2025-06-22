@@ -2,14 +2,13 @@
 
 namespace Webkul\Attribute\Repositories;
 
+use App\Repositories\TenantAwareRepository;
 use Carbon\Carbon;
 use Illuminate\Container\Container;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Webkul\Attribute\Contracts\AttributeValue;
-use Webkul\Core\Eloquent\Repository;
-
-class AttributeValueRepository extends Repository
+class AttributeValueRepository extends TenantAwareRepository
 {
     /**
      * Create a new repository instance.

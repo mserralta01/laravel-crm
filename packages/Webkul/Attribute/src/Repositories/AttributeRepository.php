@@ -2,11 +2,10 @@
 
 namespace Webkul\Attribute\Repositories;
 
+use App\Repositories\TenantAwareRepository;
 use Illuminate\Container\Container;
 use Illuminate\Support\Str;
-use Webkul\Core\Eloquent\Repository;
-
-class AttributeRepository extends Repository
+class AttributeRepository extends TenantAwareRepository
 {
     /**
      * Create a new repository instance.

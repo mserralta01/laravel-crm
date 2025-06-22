@@ -2,9 +2,8 @@
 
 namespace Webkul\Activity\Repositories;
 
-use Webkul\Core\Eloquent\Repository;
-
-class ParticipantRepository extends Repository
+use App\Repositories\TenantAwareRepository;
+class ParticipantRepository extends TenantAwareRepository
 {
     /**
      * Specify Model class name

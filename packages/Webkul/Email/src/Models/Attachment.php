@@ -2,12 +2,16 @@
 
 namespace Webkul\Email\Models;
 
+use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Webkul\Email\Contracts\Attachment as AttachmentContract;
 
 class Attachment extends Model implements AttachmentContract
 {
+    
+    use BelongsToTenant;
+
     /**
      * The attributes that are mass assignable.
      *

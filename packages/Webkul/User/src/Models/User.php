@@ -2,6 +2,7 @@
 
 namespace Webkul\User\Models;
 
+use App\Traits\BelongsToTenant;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
@@ -10,7 +11,7 @@ use Webkul\User\Contracts\User as UserContract;
 
 class User extends Authenticatable implements UserContract
 {
-    use HasApiTokens, Notifiable;
+    use HasApiTokens, Notifiable, BelongsToTenant;
 
     /**
      * The attributes that are mass assignable.

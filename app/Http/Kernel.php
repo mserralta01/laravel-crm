@@ -44,6 +44,18 @@ class Kernel extends HttpKernel
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
+        
+        'tenant' => [
+            'web',
+            \App\Http\Middleware\MultiTenancy\TenantIdentification::class,
+            \App\Http\Middleware\MultiTenancy\TenantScope::class,
+            \App\Http\Middleware\MultiTenancy\TenantImpersonation::class,
+        ],
+        
+        'super-admin' => [
+            'web',
+            \App\Http\Middleware\MultiTenancy\SuperAdminAuth::class,
+        ],
     ];
 
     /**
@@ -63,5 +75,11 @@ class Kernel extends HttpKernel
         'signed'           => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle'         => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified'         => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        
+        // Multi-tenancy middleware
+        'tenant.identify'  => \App\Http\Middleware\MultiTenancy\TenantIdentification::class,
+        'tenant.scope'     => \App\Http\Middleware\MultiTenancy\TenantScope::class,
+        'tenant.impersonate' => \App\Http\Middleware\MultiTenancy\TenantImpersonation::class,
+        'super.admin'      => \App\Http\Middleware\MultiTenancy\SuperAdminAuth::class,
     ];
 }

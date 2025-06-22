@@ -2,11 +2,11 @@
 
 namespace Webkul\Email\Repositories;
 
+use App\Repositories\TenantAwareRepository;
 use Illuminate\Container\Container;
-use Webkul\Core\Eloquent\Repository;
 use Webkul\Email\Contracts\Email;
 
-class EmailRepository extends Repository
+class EmailRepository extends TenantAwareRepository
 {
     public function __construct(
         protected AttachmentRepository $attachmentRepository,

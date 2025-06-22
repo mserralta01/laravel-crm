@@ -2,9 +2,8 @@
 
 namespace Webkul\User\Repositories;
 
-use Webkul\Core\Eloquent\Repository;
-
-class GroupRepository extends Repository
+use App\Repositories\TenantAwareRepository;
+class GroupRepository extends TenantAwareRepository
 {
     /**
      * Specify Model class name

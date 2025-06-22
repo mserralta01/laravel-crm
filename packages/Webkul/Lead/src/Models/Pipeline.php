@@ -2,11 +2,15 @@
 
 namespace Webkul\Lead\Models;
 
+use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 use Webkul\Lead\Contracts\Pipeline as PipelineContract;
 
 class Pipeline extends Model implements PipelineContract
 {
+    
+    use BelongsToTenant;
+
     protected $table = 'lead_pipelines';
 
     /**

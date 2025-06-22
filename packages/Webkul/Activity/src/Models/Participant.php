@@ -2,6 +2,7 @@
 
 namespace Webkul\Activity\Models;
 
+use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 use Webkul\Activity\Contracts\Participant as ParticipantContract;
 use Webkul\Contact\Models\PersonProxy;
@@ -9,6 +10,9 @@ use Webkul\User\Models\UserProxy;
 
 class Participant extends Model implements ParticipantContract
 {
+    
+    use BelongsToTenant;
+
     public $timestamps = false;
 
     protected $table = 'activity_participants';

@@ -2,6 +2,7 @@
 
 namespace Webkul\Lead\Repositories;
 
+use App\Repositories\TenantAwareRepository;
 use Carbon\Carbon;
 use Illuminate\Container\Container;
 use Illuminate\Support\Facades\DB;
@@ -9,10 +10,9 @@ use Illuminate\Support\Str;
 use Webkul\Attribute\Repositories\AttributeRepository;
 use Webkul\Attribute\Repositories\AttributeValueRepository;
 use Webkul\Contact\Repositories\PersonRepository;
-use Webkul\Core\Eloquent\Repository;
 use Webkul\Lead\Contracts\Lead;
 
-class LeadRepository extends Repository
+class LeadRepository extends TenantAwareRepository
 {
     /**
      * Searchable fields.
