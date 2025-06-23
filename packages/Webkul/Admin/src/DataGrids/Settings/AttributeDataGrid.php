@@ -5,9 +5,9 @@ namespace Webkul\Admin\DataGrids\Settings;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 use Webkul\Attribute\Repositories\AttributeRepository;
-use Webkul\DataGrid\DataGrid;
+use App\DataGrids\TenantAwareDataGrid;
 
-class AttributeDataGrid extends DataGrid
+class AttributeDataGrid extends TenantAwareDataGrid
 {
     /**
      * Prepare query builder.

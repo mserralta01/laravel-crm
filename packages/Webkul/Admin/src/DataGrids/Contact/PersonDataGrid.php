@@ -5,9 +5,9 @@ namespace Webkul\Admin\DataGrids\Contact;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 use Webkul\Contact\Repositories\OrganizationRepository;
-use Webkul\DataGrid\DataGrid;
+use App\DataGrids\TenantAwareDataGrid;
 
-class PersonDataGrid extends DataGrid
+class PersonDataGrid extends TenantAwareDataGrid
 {
     /**
      * Create a new class instance.

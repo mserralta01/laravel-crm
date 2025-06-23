@@ -4,9 +4,9 @@ namespace Webkul\Admin\DataGrids\Settings\DataTransfer;
 
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
-use Webkul\DataGrid\DataGrid;
+use App\DataGrids\TenantAwareDataGrid;
 
-class ImportDataGrid extends DataGrid
+class ImportDataGrid extends TenantAwareDataGrid
 {
     /**
      * Prepare query builder.

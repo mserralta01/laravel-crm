@@ -5,11 +5,11 @@ namespace Webkul\Admin\DataGrids\Mail;
 use Carbon\Carbon;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
-use Webkul\DataGrid\DataGrid;
 use Webkul\Email\Repositories\EmailRepository;
 use Webkul\Tag\Repositories\TagRepository;
+use App\DataGrids\TenantAwareDataGrid;
 
-class EmailDataGrid extends DataGrid
+class EmailDataGrid extends TenantAwareDataGrid
 {
     /**
      * Default sort column of datagrid.

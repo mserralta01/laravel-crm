@@ -3,9 +3,9 @@
 namespace Webkul\Admin\DataGrids\Settings\Marketing;
 
 use Illuminate\Support\Facades\DB;
-use Webkul\DataGrid\DataGrid;
+use App\DataGrids\TenantAwareDataGrid;
 
-class EventDataGrid extends DataGrid
+class EventDataGrid extends TenantAwareDataGrid
 {
     /**
      * Prepare query builder.
