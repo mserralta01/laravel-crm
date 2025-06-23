@@ -13,8 +13,8 @@ use Illuminate\Support\Facades\Route;
 
 // Super Admin Authentication Routes
 Route::middleware('guest:super-admin')->group(function () {
-    Route::get('login', 'Auth\SuperAdminLoginController@showLoginForm')->name('login');
-    Route::post('login', 'Auth\SuperAdminLoginController@login')->name('login.post');
+    Route::get('login', [\App\Http\Controllers\SuperAdmin\Auth\SuperAdminLoginController::class, 'showLoginForm'])->name('login');
+    Route::post('login', [\App\Http\Controllers\SuperAdmin\Auth\SuperAdminLoginController::class, 'login'])->name('login.post');
     
     Route::get('forgot-password', 'Auth\SuperAdminForgotPasswordController@showLinkRequestForm')->name('password.request');
     Route::post('forgot-password', 'Auth\SuperAdminForgotPasswordController@sendResetLinkEmail')->name('password.email');
@@ -26,7 +26,7 @@ Route::middleware('guest:super-admin')->group(function () {
 // Authenticated Super Admin Routes
 Route::middleware('super.admin')->group(function () {
     // Logout
-    Route::post('logout', 'Auth\SuperAdminLoginController@logout')->name('logout');
+    Route::post('logout', [\App\Http\Controllers\SuperAdmin\Auth\SuperAdminLoginController::class, 'logout'])->name('logout');
     
     // Dashboard
     Route::get('/', 'DashboardController@index')->name('dashboard.index');

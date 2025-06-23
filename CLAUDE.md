@@ -22,7 +22,7 @@ php artisan key:generate
 
 # Run database migrations and seeders
 php artisan migrate --seed
-php artisan krayin:install
+php artisan krayin-crm:install  # Interactive installer
 ```
 
 ### Production Setup
@@ -97,14 +97,16 @@ The application follows a modular architecture with packages located in `package
   - Sendgrid webhook support
   - IMAP email fetching
 - **Activity**: Activity logging and tracking
-- **Workflow**: Automation workflows
+- **Automation**: Workflow automation (webhooks and workflows)
 - **WebForm**: Form builder for lead capture
 - **User**: User and role management
 - **Attribute**: EAV system for custom fields
 - **Tag**: Tagging system for entities
-- **Warehouse**: Inventory management
+- **Warehouse**: Inventory and location management
 - **EmailTemplate**: Email template management
 - **DataGrid**: Reusable data table system
+- **DataTransfer**: Import/export functionality
+- **Marketing**: Campaign management
 
 ### Data Flow Pattern
 1. Routes are defined in each package's route files (`Routes/Admin/`)
@@ -133,6 +135,7 @@ DataGrids handle listing pages with built-in features:
 ### Frontend Architecture
 - Vue.js 3 components in `packages/Webkul/Admin/src/Resources/assets/js/`
 - Vite for asset bundling (config in `vite.config.js`)
+- Admin package has its own Vite config at `packages/Webkul/Admin/vite.config.js`
 - Tailwind CSS for styling
 - Custom admin UI components library
 - Dark mode support
@@ -147,6 +150,35 @@ Key components are prefixed with `v-`:
 - `<v-tabs>` - Tab navigation
 
 Components are auto-registered globally in `app.js`
+
+## Multi-Tenancy Implementation
+
+The application includes comprehensive multi-tenancy support with:
+
+### Core Components
+- **TenantManager**: Handles tenant lifecycle (creation, deletion, suspension)
+- **TenantResolver**: Resolves current tenant from request
+- **TenantIdentification** middleware: Identifies tenant from subdomain/domain
+- **TenantScope** middleware: Applies global scopes
+- **ConfigureTenantEmail** middleware: Sets tenant-specific email config
+- **BelongsToTenant** trait: Adds tenant scoping to models
+
+### Features
+- Subdomain-based tenant identification (e.g., acme.groovecrm.com)
+- Custom domain support
+- Row-level security with `tenant_id` columns
+- Super admin panel at `/super-admin`
+- Tenant-specific configurations and branding
+- Session isolation per tenant
+- Tenant-specific storage paths
+
+### Helper Functions
+```php
+current_tenant()        // Get current tenant
+tenant_route()         // Generate tenant-specific routes
+tenant_config()        // Get tenant-specific configuration
+tenant_storage_path()  // Get tenant storage path
+```
 
 ## Email Integration
 The system supports email parsing via Sendgrid webhook. Email configuration is managed through:
@@ -178,13 +210,21 @@ The system supports email parsing via Sendgrid webhook. Email configuration is m
 - GitHub Actions CI/CD pipeline (`.github/workflows/ci.yml`)
 - Tests run on PHP 8.2 and 8.3 with MySQL 8.0
 
+## Architecture Patterns
+- **Repository Pattern**: All data access through repositories
+- **Service Layer**: Business logic in service classes
+- **Proxy Pattern**: Models use Concord proxy pattern
+- **Event-Driven**: Extensive use of Laravel events
+- **Modular Design**: Self-contained packages
+- **Global Scoping**: Automatic tenant scoping via traits
+
 ## Custom Attributes System
 The application includes a flexible attributes system allowing custom fields on entities (leads, contacts, products). Attributes are managed through the `Attribute` package and stored using EAV pattern.
 
 ## Configuration
 - Environment variables in `.env`
 - Package configurations in `config/` directory
-- Package registration in `config/concord.php`
+- Package registration in `config/concord.php` (using Konekt Concord)
 - Core settings managed through admin panel
 - Multi-language support with translations in `packages/*/src/Resources/lang/`
 
@@ -192,6 +232,7 @@ The application includes a flexible attributes system allowing custom fields on 
 - Laravel Sanctum for API authentication
 - Role-based access control (ACL)
 - User groups for team management
+- Super admin authentication for multi-tenancy
 
 ## Default Admin Access
 - URL: `/admin/dashboard`
