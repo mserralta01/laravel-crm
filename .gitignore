@@ -27,8 +27,7 @@ package-lock.json
 /vendor
 yarn.lock
 yarn-error.log
-.lh
-/.lh
+
 # Playwright
 node_modules/
 /test-results/
