@@ -6,6 +6,8 @@ use App\Models\Tenant\Tenant;
 use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\ServiceProvider;
+use App\Services\Tenant\TenantEmailService;
+use App\Services\Tenant\TenantStorageService;
 
 /**
  * TenantServiceProvider
@@ -34,6 +36,20 @@ class TenantServiceProvider extends ServiceProvider
         $this->app->singleton('tenant.url', function ($app) {
             return new \App\Services\TenantUrlGenerator();
         });
+        
+        // Register TenantEmailService
+        $this->app->singleton(TenantEmailService::class, function ($app) {
+            return new TenantEmailService();
+        });
+        
+        // Register TenantStorageService
+        $this->app->singleton(TenantStorageService::class, function ($app) {
+            return new TenantStorageService();
+        });
+        
+        // Register aliases for easier access
+        $this->app->alias(TenantEmailService::class, 'tenant.email');
+        $this->app->alias(TenantStorageService::class, 'tenant.storage');
     }
 
     /**
@@ -157,6 +173,12 @@ class TenantServiceProvider extends ServiceProvider
         $this->applyTenantLimits($tenant);
         $this->applyTenantFeatures($tenant);
         $this->applyTenantBranding($tenant);
+        
+        // Configure email settings
+        $this->app->make(TenantEmailService::class)->configureTenantMail();
+        
+        // Create tenant storage directories if needed
+        $this->app->make(TenantStorageService::class)->createTenantDirectories();
     }
 
     /**

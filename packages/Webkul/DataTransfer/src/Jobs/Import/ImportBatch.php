@@ -3,16 +3,13 @@
 namespace Webkul\DataTransfer\Jobs\Import;
 
 use Illuminate\Bus\Batchable;
-use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 use Webkul\DataTransfer\Helpers\Import as ImportHelper;
 
-class ImportBatch implements ShouldQueue
+class ImportBatch extends TenantAwareJob
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+use App\Jobs\TenantAwareJob;
 
     /**
      * Create a new job instance.
@@ -30,7 +27,7 @@ class ImportBatch implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    protected function handleJob()
     {
         $typeImported = app(ImportHelper::class)
             ->setImport($this->importBatch->import)

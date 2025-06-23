@@ -4,15 +4,15 @@ namespace Webkul\Admin\DataGrids\Lead;
 
 use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
-use Webkul\DataGrid\DataGrid;
 use Webkul\Lead\Repositories\PipelineRepository;
 use Webkul\Lead\Repositories\SourceRepository;
 use Webkul\Lead\Repositories\StageRepository;
 use Webkul\Lead\Repositories\TypeRepository;
 use Webkul\Tag\Repositories\TagRepository;
 use Webkul\User\Repositories\UserRepository;
+use App\DataGrids\TenantAwareDataGrid;
 
-class LeadDataGrid extends DataGrid
+class LeadDataGrid extends TenantAwareDataGrid
 {
     /**
      * Pipeline instance.

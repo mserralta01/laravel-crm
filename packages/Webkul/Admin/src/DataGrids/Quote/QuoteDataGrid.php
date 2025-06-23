@@ -4,9 +4,9 @@ namespace Webkul\Admin\DataGrids\Quote;
 
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
-use Webkul\DataGrid\DataGrid;
+use App\DataGrids\TenantAwareDataGrid;
 
-class QuoteDataGrid extends DataGrid
+class QuoteDataGrid extends TenantAwareDataGrid
 {
     /**
      * Prepare query builder.

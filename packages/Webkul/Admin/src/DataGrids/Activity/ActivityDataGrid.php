@@ -5,13 +5,13 @@ namespace Webkul\Admin\DataGrids\Activity;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 use Webkul\Admin\Traits\ProvideDropdownOptions;
-use Webkul\DataGrid\DataGrid;
 use Webkul\Lead\Repositories\LeadRepository;
 use Webkul\User\Repositories\UserRepository;
 
-class ActivityDataGrid extends DataGrid
+class ActivityDataGrid extends TenantAwareDataGrid
 {
     use ProvideDropdownOptions;
+use App\DataGrids\TenantAwareDataGrid;
 
     /**
      * Prepare query builder.

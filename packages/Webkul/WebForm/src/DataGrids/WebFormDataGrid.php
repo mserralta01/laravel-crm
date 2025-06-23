@@ -4,9 +4,9 @@ namespace Webkul\WebForm\DataGrids;
 
 use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
-use Webkul\DataGrid\DataGrid;
+use App\DataGrids\TenantAwareDataGrid;
 
-class WebFormDataGrid extends DataGrid
+class WebFormDataGrid extends TenantAwareDataGrid
 {
     /**
      * Prepare query builder.

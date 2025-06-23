@@ -4,10 +4,10 @@ namespace Webkul\Admin\DataGrids\Product;
 
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
-use Webkul\DataGrid\DataGrid;
 use Webkul\Tag\Repositories\TagRepository;
+use App\DataGrids\TenantAwareDataGrid;
 
-class ProductDataGrid extends DataGrid
+class ProductDataGrid extends TenantAwareDataGrid
 {
     /**
      * Prepare query builder.
