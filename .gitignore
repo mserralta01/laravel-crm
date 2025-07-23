@@ -33,3 +33,35 @@ node_modules/
 /test-results/
 /blob-report/
 /playwright/.cache/
+
+# Lighthouse and other rebuildable directories
+.lh/
+dist/
+build/
+
+# Logs
+*.log
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.cache
+*.swp
+*.swo
+
+# IDE files
+*.sublime-project
+*.sublime-workspace
+
+# Build artifacts
+*.tgz
+*.tar.gz
