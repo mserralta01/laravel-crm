@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles for super admin panel */
+@layer components {
+    .stat-card {
+        @apply bg-white overflow-hidden shadow-sm rounded-xl transition-all duration-200 hover:shadow-lg;
+    }
+    
+    .stat-icon {
+        @apply w-8 h-8;
+    }
+    
+    .btn-primary {
+        @apply inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg shadow-sm transition-colors;
+    }
+    
+    .btn-secondary {
+        @apply inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white text-sm font-medium rounded-lg shadow-sm transition-colors;
+    }
+}

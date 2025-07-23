@@ -2,111 +2,104 @@
 
 namespace Database\Seeders;
 
-use App\Models\Tenant\Tenant;
-use App\Models\Tenant\TenantSetting;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Tenant\Tenant;
+use Webkul\User\Models\User;
+use Webkul\User\Models\Group;
+use Webkul\User\Models\Role;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class TestTenantSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     * 
-     * Creates test tenants for development and testing purposes.
      */
     public function run(): void
     {
-        // Check if test tenants already exist
-        if (Tenant::where('slug', 'acme')->exists()) {
-            $this->command->info('Test tenants already exist, skipping...');
-            return;
-        }
+        DB::transaction(function () {
+            // Create a test tenant
+            $tenant = Tenant::create([
+                'name' => 'Acme Corporation',
+                'slug' => 'acme',
+                'email' => 'admin@acme.com',
+                'phone' => '555-0100',
+                'status' => Tenant::STATUS_ACTIVE,
+                'trial_ends_at' => now()->addDays(30),
+                'settings' => [
+                    'theme' => 'default',
+                    'timezone' => 'America/New_York',
+                ],
+            ]);
 
-        // Create first test tenant
-        $acmeTenant = Tenant::create([
-            'name' => 'Acme Corporation',
-            'slug' => 'acme',
-            'email' => 'admin@acmecorp.com',
-            'phone' => '+1-555-123-4567',
-            'status' => Tenant::STATUS_ACTIVE,
-            'trial_ends_at' => now()->addDays(30),
-            'settings' => [
-                'industry' => 'Technology',
-                'timezone' => 'America/New_York',
-            ],
-        ]);
+            $this->command->info("Created tenant: {$tenant->name} (ID: {$tenant->id})");
 
-        // Create domain for tenant
-        $acmeTenant->domains()->create([
-            'domain' => 'acme.' . config('app.domain', 'groovecrm.test'),
-            'is_primary' => true,
-            'is_verified' => true,
-            'verified_at' => now(),
-            'ssl_enabled' => false,
-        ]);
+            // Get or create admin role
+            $adminRole = Role::firstOrCreate(
+                ['name' => 'Administrator'],
+                [
+                    'description' => 'Administrator role has all permissions',
+                    'permission_type' => 'all',
+                ]
+            );
 
-        // Create database configuration (for testing, we'll use prefixed database names)
-        $acmeTenant->database()->create([
-            'connection_name' => 'tenant_' . $acmeTenant->id,
-            'database_name' => config('database.connections.mysql.database') . '_tenant_' . $acmeTenant->id,
-            'host' => config('database.connections.mysql.host'),
-            'port' => config('database.connections.mysql.port'),
-            'username' => config('database.connections.mysql.username'),
-            'password' => config('database.connections.mysql.password'),
-        ]);
+            // Get or create default group
+            $defaultGroup = Group::firstOrCreate(
+                ['name' => 'General'],
+                ['description' => 'General group']
+            );
 
-        // Create default settings
-        TenantSetting::createDefaultSettings($acmeTenant);
+            // Create tenant admin user
+            $tenantAdmin = User::create([
+                'name' => 'Acme Admin',
+                'email' => 'admin@acme.com',
+                'password' => Hash::make('password'),
+                'role_id' => $adminRole->id,
+                'status' => 1,
+                'tenant_id' => $tenant->id,
+            ]);
 
-        // Log creation activity
-        $acmeTenant->logActivity('tenant.created', 'Test tenant created via seeder');
+            // Attach to default group
+            $tenantAdmin->groups()->attach($defaultGroup->id);
 
-        $this->command->info('Test tenant "Acme Corporation" created successfully!');
-        $this->command->info('Domain: acme.' . config('app.domain', 'groovecrm.test'));
+            $this->command->info("Created tenant admin user: {$tenantAdmin->email}");
 
-        // Create second test tenant
-        $betaTenant = Tenant::create([
-            'name' => 'Beta Industries',
-            'slug' => 'beta',
-            'email' => 'admin@betaindustries.com',
-            'phone' => '+1-555-987-6543',
-            'status' => Tenant::STATUS_ACTIVE,
-            'settings' => [
-                'industry' => 'Manufacturing',
-                'timezone' => 'Europe/London',
-            ],
-        ]);
+            // Create another tenant for testing
+            $tenant2 = Tenant::create([
+                'name' => 'TechCorp Solutions',
+                'slug' => 'techcorp',
+                'email' => 'admin@techcorp.com',
+                'phone' => '555-0200',
+                'status' => Tenant::STATUS_ACTIVE,
+                'trial_ends_at' => now()->addDays(30),
+                'settings' => [
+                    'theme' => 'default',
+                    'timezone' => 'America/Los_Angeles',
+                ],
+            ]);
 
-        // Create domain for tenant
-        $betaTenant->domains()->create([
-            'domain' => 'beta.' . config('app.domain', 'groovecrm.test'),
-            'is_primary' => true,
-            'is_verified' => true,
-            'verified_at' => now(),
-            'ssl_enabled' => false,
-        ]);
+            $this->command->info("Created tenant: {$tenant2->name} (ID: {$tenant2->id})");
 
-        // Create database configuration
-        $betaTenant->database()->create([
-            'connection_name' => 'tenant_' . $betaTenant->id,
-            'database_name' => config('database.connections.mysql.database') . '_tenant_' . $betaTenant->id,
-            'host' => config('database.connections.mysql.host'),
-            'port' => config('database.connections.mysql.port'),
-            'username' => config('database.connections.mysql.username'),
-            'password' => config('database.connections.mysql.password'),
-        ]);
+            // Create tenant admin user for second tenant
+            $tenantAdmin2 = User::create([
+                'name' => 'TechCorp Admin',
+                'email' => 'admin@techcorp.com',
+                'password' => Hash::make('password'),
+                'role_id' => $adminRole->id,
+                'status' => 1,
+                'tenant_id' => $tenant2->id,
+            ]);
 
-        // Create default settings with some customizations
-        TenantSetting::createDefaultSettings($betaTenant);
-        
-        // Customize some settings
-        $betaTenant->setSetting('limits', 'max_users', 50, 'number');
-        $betaTenant->setSetting('features', 'api_access', false, 'boolean');
+            // Attach to default group
+            $tenantAdmin2->groups()->attach($defaultGroup->id);
 
-        // Log creation activity
-        $betaTenant->logActivity('tenant.created', 'Test tenant created via seeder');
+            $this->command->info("Created tenant admin user: {$tenantAdmin2->email}");
 
-        $this->command->info('Test tenant "Beta Industries" created successfully!');
-        $this->command->info('Domain: beta.' . config('app.domain', 'groovecrm.test'));
+            $this->command->info("\nTest tenants created successfully!");
+            $this->command->info("You can now log in with:");
+            $this->command->info("- Tenant 1: admin@acme.com / password");
+            $this->command->info("- Tenant 2: admin@techcorp.com / password");
+            $this->command->info("- Super Admin: admin@example.com / admin123");
+        });
     }
 }

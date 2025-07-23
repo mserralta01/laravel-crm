@@ -80,6 +80,7 @@ class Kernel extends HttpKernel
         'tenant.identify'  => \App\Http\Middleware\MultiTenancy\TenantIdentification::class,
         'tenant.scope'     => \App\Http\Middleware\MultiTenancy\TenantScope::class,
         'tenant.impersonate' => \App\Http\Middleware\MultiTenancy\TenantImpersonation::class,
+        'tenant.by.user'   => \App\Http\Middleware\MultiTenancy\SetTenantByUser::class,
         'super.admin'      => \App\Http\Middleware\MultiTenancy\SuperAdminAuth::class,
     ];
 }

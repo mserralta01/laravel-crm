@@ -81,29 +81,38 @@ return new class extends Migration
      */
     public function up()
     {
+        // First run the tenant tables migrations
+        if (!Schema::hasTable('tenants')) {
+            Schema::create('tenants', function (Blueprint $table) {
+                $table->id();
+                $table->uuid('uuid')->unique();
+                $table->string('name');
+                $table->string('slug')->unique();
+                $table->string('email');
+                $table->string('phone', 20)->nullable();
+                $table->enum('status', ['active', 'suspended', 'inactive'])->default('active');
+                $table->timestamp('trial_ends_at')->nullable();
+                $table->json('settings')->nullable();
+                $table->timestamps();
+                
+                $table->index('status');
+                $table->index('slug');
+                $table->index(['status', 'trial_ends_at']);
+            });
+        }
+
+        // Add tenant_id to all tables
         foreach ($this->tables as $table) {
             if (Schema::hasTable($table) && !Schema::hasColumn($table, 'tenant_id')) {
                 Schema::table($table, function (Blueprint $blueprintTable) use ($table) {
-                    // Check if table has 'id' column
-                    $columns = Schema::getColumnListing($table);
-                    
-                    if (in_array('id', $columns)) {
-                        $blueprintTable->uuid('tenant_id')->nullable()->after('id');
-                    } else {
-                        // For junction tables without id, add at the beginning
-                        $blueprintTable->uuid('tenant_id')->nullable()->first();
-                    }
-                    
+                    $blueprintTable->unsignedBigInteger('tenant_id')->nullable()->after('id');
                     $blueprintTable->index('tenant_id');
                 });
             }
         }
 
-        // Update unique constraints to include tenant_id
-        $this->updateUniqueConstraints();
-        
-        // Add foreign key constraints
-        $this->addForeignKeyConstraints();
+        // Update unique constraints safely
+        $this->updateUniqueConstraintsSafely();
     }
 
     /**
@@ -113,9 +122,6 @@ return new class extends Migration
      */
     public function down()
     {
-        // Remove foreign key constraints first
-        $this->removeForeignKeyConstraints();
-        
         foreach ($this->tables as $table) {
             if (Schema::hasTable($table) && Schema::hasColumn($table, 'tenant_id')) {
                 Schema::table($table, function (Blueprint $table) {
@@ -126,114 +132,51 @@ return new class extends Migration
     }
 
     /**
-     * Update unique constraints to include tenant_id.
-     *
-     * @return void
+     * Update unique constraints safely.
      */
-    protected function updateUniqueConstraints()
+    protected function updateUniqueConstraintsSafely()
     {
-        // Update users table unique constraint
-        if (Schema::hasTable('users')) {
-            Schema::table('users', function (Blueprint $table) {
-                // Drop existing unique constraint on email
-                $table->dropUnique(['email']);
-                
-                // Add composite unique constraint
-                $table->unique(['tenant_id', 'email'], 'users_tenant_email_unique');
-            });
-        }
-
-        // Update products table unique constraint
-        if (Schema::hasTable('products')) {
-            Schema::table('products', function (Blueprint $table) {
-                if (Schema::hasColumn('products', 'sku')) {
-                    // Drop existing unique constraint on sku if exists
-                    try {
-                        $table->dropUnique(['sku']);
-                    } catch (\Exception $e) {
-                        // Constraint might not exist
-                    }
-                    
-                    // Add composite unique constraint
-                    $table->unique(['tenant_id', 'sku'], 'products_tenant_sku_unique');
-                }
-            });
-        }
-
-        // Update web_forms table unique constraint
-        if (Schema::hasTable('web_forms')) {
-            Schema::table('web_forms', function (Blueprint $table) {
-                if (Schema::hasColumn('web_forms', 'form_id')) {
-                    // Drop existing unique constraint on form_id if exists
-                    try {
-                        $table->dropUnique(['form_id']);
-                    } catch (\Exception $e) {
-                        // Constraint might not exist
-                    }
-                    
-                    // Add composite unique constraint
-                    $table->unique(['tenant_id', 'form_id'], 'web_forms_tenant_form_id_unique');
-                }
-            });
-        }
-
-        // Update tags table unique constraint
-        if (Schema::hasTable('tags')) {
-            // Check if the constraint exists before trying to drop it
-            $sm = Schema::getConnection()->getDoctrineSchemaManager();
-            $indexes = $sm->listTableIndexes('tags');
-            
-            Schema::table('tags', function (Blueprint $table) use ($indexes) {
-                if (Schema::hasColumn('tags', 'name')) {
-                    // Drop existing unique constraint on name if exists
-                    foreach ($indexes as $index) {
-                        if ($index->isUnique() && in_array('name', $index->getColumns())) {
-                            try {
-                                $table->dropIndex($index->getName());
-                            } catch (\Exception $e) {
-                                // Ignore if already dropped
-                            }
-                        }
-                    }
-                    
-                    // Add composite unique constraint
-                    $table->unique(['tenant_id', 'name'], 'tags_tenant_name_unique');
-                }
-            });
-        }
-    }
-
-    /**
-     * Add foreign key constraints for tenant_id.
-     *
-     * @return void
-     */
-    protected function addForeignKeyConstraints()
-    {
-        foreach ($this->tables as $table) {
-            if (Schema::hasTable($table) && Schema::hasColumn($table, 'tenant_id')) {
-                Schema::table($table, function (Blueprint $table) {
-                    $table->foreign('tenant_id')
-                        ->references('id')
-                        ->on('tenants')
-                        ->onDelete('cascade');
+        // Update users table
+        if (Schema::hasTable('users') && Schema::hasColumn('users', 'email')) {
+            try {
+                Schema::table('users', function (Blueprint $table) {
+                    $table->unique(['tenant_id', 'email'], 'users_tenant_email_unique');
                 });
+            } catch (\Exception $e) {
+                // Constraint might already exist
             }
         }
-    }
 
-    /**
-     * Remove foreign key constraints for tenant_id.
-     *
-     * @return void
-     */
-    protected function removeForeignKeyConstraints()
-    {
-        foreach ($this->tables as $tableName) {
-            if (Schema::hasTable($tableName) && Schema::hasColumn($tableName, 'tenant_id')) {
-                Schema::table($tableName, function (Blueprint $table) use ($tableName) {
-                    $table->dropForeign(['tenant_id']);
+        // Update products table
+        if (Schema::hasTable('products') && Schema::hasColumn('products', 'sku')) {
+            try {
+                Schema::table('products', function (Blueprint $table) {
+                    $table->unique(['tenant_id', 'sku'], 'products_tenant_sku_unique');
                 });
+            } catch (\Exception $e) {
+                // Constraint might already exist
+            }
+        }
+
+        // Update tags table
+        if (Schema::hasTable('tags') && Schema::hasColumn('tags', 'name')) {
+            try {
+                Schema::table('tags', function (Blueprint $table) {
+                    $table->unique(['tenant_id', 'name'], 'tags_tenant_name_unique');
+                });
+            } catch (\Exception $e) {
+                // Constraint might already exist
+            }
+        }
+
+        // Update web_forms table
+        if (Schema::hasTable('web_forms') && Schema::hasColumn('web_forms', 'form_id')) {
+            try {
+                Schema::table('web_forms', function (Blueprint $table) {
+                    $table->unique(['tenant_id', 'form_id'], 'web_forms_tenant_form_id_unique');
+                });
+            } catch (\Exception $e) {
+                // Constraint might already exist
             }
         }
     }

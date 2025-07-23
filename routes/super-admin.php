@@ -13,40 +13,40 @@ use Illuminate\Support\Facades\Route;
 
 // Super Admin Authentication Routes
 Route::middleware('guest:super-admin')->group(function () {
-    Route::get('login', 'Auth\SuperAdminLoginController@showLoginForm')->name('login');
-    Route::post('login', 'Auth\SuperAdminLoginController@login')->name('login.post');
+    Route::get('login', [\App\Http\Controllers\SuperAdmin\Auth\SuperAdminLoginController::class, 'showLoginForm'])->name('login');
+    Route::post('login', [\App\Http\Controllers\SuperAdmin\Auth\SuperAdminLoginController::class, 'login'])->name('login.post');
     
-    Route::get('forgot-password', 'Auth\SuperAdminForgotPasswordController@showLinkRequestForm')->name('password.request');
-    Route::post('forgot-password', 'Auth\SuperAdminForgotPasswordController@sendResetLinkEmail')->name('password.email');
+    Route::get('forgot-password', [\App\Http\Controllers\SuperAdmin\Auth\SuperAdminForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+    Route::post('forgot-password', [\App\Http\Controllers\SuperAdmin\Auth\SuperAdminForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
     
-    Route::get('reset-password/{token}', 'Auth\SuperAdminResetPasswordController@showResetForm')->name('password.reset');
-    Route::post('reset-password', 'Auth\SuperAdminResetPasswordController@reset')->name('password.update');
+    Route::get('reset-password/{token}', [\App\Http\Controllers\SuperAdmin\Auth\SuperAdminResetPasswordController::class, 'showResetForm'])->name('password.reset');
+    Route::post('reset-password', [\App\Http\Controllers\SuperAdmin\Auth\SuperAdminResetPasswordController::class, 'reset'])->name('password.update');
 });
 
 // Authenticated Super Admin Routes
 Route::middleware('super.admin')->group(function () {
     // Logout
-    Route::post('logout', 'Auth\SuperAdminLoginController@logout')->name('logout');
+    Route::post('logout', [\App\Http\Controllers\SuperAdmin\Auth\SuperAdminLoginController::class, 'logout'])->name('logout');
     
     // Dashboard
-    Route::get('/', 'DashboardController@index')->name('dashboard.index');
-    Route::get('dashboard', 'DashboardController@index')->name('dashboard');
-    Route::get('dashboard/stats', 'DashboardController@stats')->name('dashboard.stats');
+    Route::get('/', [\App\Http\Controllers\SuperAdmin\DashboardController::class, 'index'])->name('dashboard.index');
+    Route::get('dashboard', [\App\Http\Controllers\SuperAdmin\DashboardController::class, 'index'])->name('dashboard');
+    Route::get('dashboard/stats', [\App\Http\Controllers\SuperAdmin\DashboardController::class, 'stats'])->name('dashboard.stats');
     
     // Tenant Management
     Route::prefix('tenants')->name('tenants.')->group(function () {
-        Route::get('/', 'TenantController@index')->name('index');
-        Route::get('create', 'TenantController@create')->name('create');
-        Route::post('/', 'TenantController@store')->name('store');
-        Route::get('{tenant}', 'TenantController@show')->name('show');
-        Route::get('{tenant}/edit', 'TenantController@edit')->name('edit');
-        Route::put('{tenant}', 'TenantController@update')->name('update');
-        Route::delete('{tenant}', 'TenantController@destroy')->name('destroy');
+        Route::get('/', [\App\Http\Controllers\SuperAdmin\TenantController::class, 'index'])->name('index');
+        Route::get('create', [\App\Http\Controllers\SuperAdmin\TenantController::class, 'create'])->name('create');
+        Route::post('/', [\App\Http\Controllers\SuperAdmin\TenantController::class, 'store'])->name('store');
+        Route::get('{tenant}', [\App\Http\Controllers\SuperAdmin\TenantController::class, 'show'])->name('show');
+        Route::get('{tenant}/edit', [\App\Http\Controllers\SuperAdmin\TenantController::class, 'edit'])->name('edit');
+        Route::put('{tenant}', [\App\Http\Controllers\SuperAdmin\TenantController::class, 'update'])->name('update');
+        Route::delete('{tenant}', [\App\Http\Controllers\SuperAdmin\TenantController::class, 'destroy'])->name('destroy');
         
         // Tenant Actions
-        Route::post('{tenant}/suspend', 'TenantController@suspend')->name('suspend');
-        Route::post('{tenant}/activate', 'TenantController@activate')->name('activate');
-        Route::post('{tenant}/impersonate', 'TenantController@impersonate')->name('impersonate');
+        Route::post('{tenant}/suspend', [\App\Http\Controllers\SuperAdmin\TenantController::class, 'suspend'])->name('suspend');
+        Route::post('{tenant}/activate', [\App\Http\Controllers\SuperAdmin\TenantController::class, 'activate'])->name('activate');
+        Route::post('{tenant}/impersonate', [\App\Http\Controllers\SuperAdmin\TenantController::class, 'impersonate'])->name('impersonate');
         Route::get('{tenant}/backup', 'TenantController@backup')->name('backup');
         Route::post('{tenant}/restore', 'TenantController@restore')->name('restore');
         

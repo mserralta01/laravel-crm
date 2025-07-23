@@ -101,9 +101,8 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapSuperAdminRoutes(): void
     {
-        // Super admin routes on admin subdomain
-        Route::domain('admin.' . config('app.domain'))
-            ->middleware(['web'])
+        // Super admin routes - no subdomain required
+        Route::middleware(['web'])
             ->prefix('super-admin')
             ->name('super-admin.')
             ->group(base_path('routes/super-admin.php'));
@@ -116,31 +115,16 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapTenantRoutes(): void
     {
-        // Tenant subdomain routes
-        Route::domain('{tenant}.' . config('app.domain'))
-            ->middleware(['tenant'])
-            ->group(function () {
-                // Include existing Krayin admin routes for tenants
-                $this->loadKrayinTenantRoutes();
-                
-                // Include tenant-specific routes
-                if (file_exists(base_path('routes/tenant.php'))) {
-                    require base_path('routes/tenant.php');
-                }
-            });
-
-        // Custom domain routes (checked via middleware)
-        Route::middleware(['tenant'])
-            ->group(function () {
-                // Only load if not on a subdomain and not on admin subdomain
-                if (!$this->isSubdomainRequest() && !$this->isAdminSubdomain()) {
-                    $this->loadKrayinTenantRoutes();
-                    
-                    if (file_exists(base_path('routes/tenant.php'))) {
-                        require base_path('routes/tenant.php');
-                    }
-                }
-            });
+        // All tenant routes now use user-based identification
+        // No subdomain required - simpler approach
+        $this->loadKrayinTenantRoutes();
+        
+        // Include tenant-specific routes if they exist
+        if (file_exists(base_path('routes/tenant.php'))) {
+            Route::middleware(['web', 'admin_locale', 'user', 'tenant.by.user'])
+                ->prefix(config('app.admin_path', 'admin'))
+                ->group(base_path('routes/tenant.php'));
+        }
     }
 
     /**
@@ -150,15 +134,8 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapApiRoutes(): void
     {
-        // Tenant API routes
-        Route::domain('{tenant}.' . config('app.domain'))
-            ->middleware(['api', 'tenant', 'throttle:tenant-api'])
-            ->prefix('api')
-            ->name('api.')
-            ->group(base_path('routes/api.php'));
-
-        // API routes with tenant header
-        Route::middleware(['api', 'tenant.identify', 'tenant.scope', 'throttle:tenant-api'])
+        // API routes with user-based tenant identification
+        Route::middleware(['api', 'auth:sanctum', 'tenant.by.user', 'throttle:tenant-api'])
             ->prefix('api')
             ->name('api.')
             ->group(base_path('routes/api.php'));
@@ -171,13 +148,8 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapWebRoutes(): void
     {
-        // Main website routes (www or root domain)
-        Route::domain(config('app.domain'))
-            ->middleware('web')
-            ->group(base_path('routes/web.php'));
-        
-        Route::domain('www.' . config('app.domain'))
-            ->middleware('web')
+        // Main website routes - no domain restrictions
+        Route::middleware('web')
             ->group(base_path('routes/web.php'));
     }
 
@@ -188,8 +160,8 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function loadKrayinTenantRoutes(): void
     {
-        // Admin routes from Krayin packages
-        $adminMiddleware = ['web', 'admin_locale', 'user'];
+        // Admin routes from Krayin packages with tenant context
+        $adminMiddleware = ['web', 'admin_locale', 'user', 'tenant.by.user'];
         
         Route::middleware($adminMiddleware)
             ->prefix(config('app.admin_path', 'admin'))
