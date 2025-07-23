@@ -4,6 +4,7 @@ namespace Webkul\Admin\DataGrids\Settings;
 
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\TenantHelper;
 use Webkul\DataGrid\DataGrid;
 
 class RoleDataGrid extends DataGrid
@@ -13,7 +14,7 @@ class RoleDataGrid extends DataGrid
      */
     public function prepareQueryBuilder(): Builder
     {
-        $queryBuilder = DB::table('roles')
+        $queryBuilder = TenantHelper::table('roles')
             ->addSelect(
                 'roles.id',
                 'roles.name',

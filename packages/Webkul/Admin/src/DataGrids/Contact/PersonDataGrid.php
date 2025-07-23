@@ -4,6 +4,7 @@ namespace Webkul\Admin\DataGrids\Contact;
 
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\TenantHelper;
 use Webkul\Contact\Repositories\OrganizationRepository;
 use App\DataGrids\TenantAwareDataGrid;
 
@@ -21,7 +22,7 @@ class PersonDataGrid extends TenantAwareDataGrid
      */
     public function prepareQueryBuilder(): Builder
     {
-        $queryBuilder = DB::table('persons')
+        $queryBuilder = TenantHelper::table('persons')
             ->addSelect(
                 'persons.id',
                 'persons.name as person_name',

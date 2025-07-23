@@ -9,17 +9,16 @@ use Illuminate\Support\Str;
 abstract class TenantAwareDataGrid extends DataGrid
 {
     /**
-     * Prepare query builder with tenant filtering
+     * Override prepareActions to apply tenant filtering after query is built
      */
-    protected function prepareQueryBuilder()
+    protected function prepareColumns()
     {
-        parent::prepareQueryBuilder();
+        parent::prepareColumns();
         
-        if ($tenantId = $this->getCurrentTenantId()) {
+        // Apply tenant filtering after the query builder is set up
+        if ($this->queryBuilder && $tenantId = $this->getCurrentTenantId()) {
             $this->addTenantFilter($tenantId);
         }
-        
-        return $this;
     }
     
     /**

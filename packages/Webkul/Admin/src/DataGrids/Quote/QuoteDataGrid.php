@@ -4,6 +4,7 @@ namespace Webkul\Admin\DataGrids\Quote;
 
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\TenantHelper;
 use App\DataGrids\TenantAwareDataGrid;
 
 class QuoteDataGrid extends TenantAwareDataGrid
@@ -15,7 +16,7 @@ class QuoteDataGrid extends TenantAwareDataGrid
     {
         $tablePrefix = DB::getTablePrefix();
 
-        $queryBuilder = DB::table('quotes')
+        $queryBuilder = TenantHelper::table('quotes')
             ->addSelect(
                 'quotes.id',
                 'quotes.subject',

@@ -13,7 +13,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        // Register tenant service
+        $this->app->singleton('tenant.service', function ($app) {
+            return new \App\Services\TenantService();
+        });
     }
 
     /**

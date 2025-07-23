@@ -4,6 +4,7 @@ namespace Webkul\Admin\DataGrids\Activity;
 
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\TenantHelper;
 use Webkul\Admin\Traits\ProvideDropdownOptions;
 use Webkul\Lead\Repositories\LeadRepository;
 use Webkul\User\Repositories\UserRepository;
@@ -18,7 +19,7 @@ use App\DataGrids\TenantAwareDataGrid;
      */
     public function prepareQueryBuilder(): Builder
     {
-        $queryBuilder = DB::table('activities')
+        $queryBuilder = TenantHelper::table('activities')
             ->distinct()
             ->select(
                 'activities.*',

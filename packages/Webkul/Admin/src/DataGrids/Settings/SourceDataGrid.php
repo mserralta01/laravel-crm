@@ -4,6 +4,7 @@ namespace Webkul\Admin\DataGrids\Settings;
 
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\TenantHelper;
 use App\DataGrids\TenantAwareDataGrid;
 
 class SourceDataGrid extends TenantAwareDataGrid
@@ -13,7 +14,7 @@ class SourceDataGrid extends TenantAwareDataGrid
      */
     public function prepareQueryBuilder(): Builder
     {
-        $queryBuilder = DB::table('lead_sources')
+        $queryBuilder = TenantHelper::table('lead_sources')
             ->addSelect(
                 'lead_sources.id',
                 'lead_sources.name'

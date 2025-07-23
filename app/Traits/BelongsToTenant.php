@@ -36,7 +36,18 @@ trait BelongsToTenant
         // Automatically set tenant_id when creating a new model
         static::creating(function (Model $model) {
             if (empty($model->tenant_id)) {
-                $model->tenant_id = static::getCurrentTenantId();
+                $tenantId = static::getCurrentTenantId();
+                if (!$tenantId) {
+                    throw new \RuntimeException('No tenant context set. Cannot create ' . get_class($model) . ' without tenant.');
+                }
+                $model->tenant_id = $tenantId;
+            }
+        });
+
+        // Validate tenant_id hasn't been tampered with on update
+        static::updating(function (Model $model) {
+            if ($model->isDirty('tenant_id') && $model->getOriginal('tenant_id')) {
+                throw new \RuntimeException('Cannot change tenant_id after creation');
             }
         });
 
@@ -64,10 +75,10 @@ trait BelongsToTenant
      * Scope a query to a specific tenant.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  string  $tenantId
+     * @param  int  $tenantId
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeForTenant($query, string $tenantId)
+    public function scopeForTenant($query, int $tenantId)
     {
         return $query->withoutGlobalScope('tenant')
             ->where('tenant_id', $tenantId);
@@ -87,9 +98,9 @@ trait BelongsToTenant
     /**
      * Get the current tenant ID.
      *
-     * @return string|null
+     * @return int|null
      */
-    protected static function getCurrentTenantId(): ?string
+    protected static function getCurrentTenantId(): ?int
     {
         // First check if we're in a queued job with tenant context
         if (app()->bound('tenant.id')) {
@@ -123,8 +134,17 @@ trait BelongsToTenant
     public function setTenant($tenant)
     {
         if ($tenant instanceof Tenant) {
+            // Validate tenant is active
+            if (!$tenant->isActive()) {
+                throw new \InvalidArgumentException('Cannot set inactive tenant');
+            }
             $this->tenant_id = $tenant->id;
         } else {
+            // Validate tenant ID exists and is active
+            $tenantModel = Tenant::find($tenant);
+            if (!$tenantModel || !$tenantModel->isActive()) {
+                throw new \InvalidArgumentException('Invalid or inactive tenant ID: ' . $tenant);
+            }
             $this->tenant_id = $tenant;
         }
 

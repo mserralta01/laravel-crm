@@ -2,12 +2,15 @@
 
 namespace Webkul\Lead\Models;
 
+use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 use Webkul\Lead\Contracts\Product as ProductContract;
 use Webkul\Product\Models\ProductProxy;
 
 class Product extends Model implements ProductContract
 {
+    use BelongsToTenant;
+    
     protected $table = 'lead_products';
 
     /**

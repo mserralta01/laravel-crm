@@ -2,11 +2,13 @@
 
 namespace Webkul\DataTransfer\Models;
 
+use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 use Webkul\DataTransfer\Contracts\ImportBatch as ImportBatchContract;
 
 class ImportBatch extends Model implements ImportBatchContract
 {
+    use BelongsToTenant;
     /**
      * Indicates if the model should be timestamped.
      *

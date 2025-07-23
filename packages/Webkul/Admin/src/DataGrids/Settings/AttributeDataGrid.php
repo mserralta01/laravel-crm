@@ -4,6 +4,7 @@ namespace Webkul\Admin\DataGrids\Settings;
 
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\TenantHelper;
 use Webkul\Attribute\Repositories\AttributeRepository;
 use App\DataGrids\TenantAwareDataGrid;
 
@@ -14,7 +15,7 @@ class AttributeDataGrid extends TenantAwareDataGrid
      */
     public function prepareQueryBuilder(): Builder
     {
-        $queryBuilder = DB::table('attributes')
+        $queryBuilder = TenantHelper::table('attributes')
             ->select(
                 'attributes.id',
                 'attributes.code',

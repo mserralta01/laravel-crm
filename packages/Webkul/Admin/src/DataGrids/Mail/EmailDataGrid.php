@@ -5,6 +5,7 @@ namespace Webkul\Admin\DataGrids\Mail;
 use Carbon\Carbon;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\TenantHelper;
 use Webkul\Email\Repositories\EmailRepository;
 use Webkul\Tag\Repositories\TagRepository;
 use App\DataGrids\TenantAwareDataGrid;
@@ -23,7 +24,7 @@ class EmailDataGrid extends TenantAwareDataGrid
      */
     public function prepareQueryBuilder(): Builder
     {
-        $queryBuilder = DB::table('emails')
+        $queryBuilder = TenantHelper::table('emails')
             ->select(
                 'emails.id',
                 'emails.name',

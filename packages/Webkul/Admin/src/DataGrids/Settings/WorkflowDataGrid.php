@@ -4,6 +4,7 @@ namespace Webkul\Admin\DataGrids\Settings;
 
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\TenantHelper;
 use App\DataGrids\TenantAwareDataGrid;
 
 class WorkflowDataGrid extends TenantAwareDataGrid
@@ -13,7 +14,7 @@ class WorkflowDataGrid extends TenantAwareDataGrid
      */
     public function prepareQueryBuilder(): Builder
     {
-        $queryBuilder = DB::table('workflows')
+        $queryBuilder = TenantHelper::table('workflows')
             ->addSelect(
                 'workflows.id',
                 'workflows.name'

@@ -45,6 +45,18 @@ class SetTenantByUser
                     
                     // Configure tenant-specific settings
                     $this->configureTenantContext($tenant);
+                    
+                    // Log tenant access
+                    \Log::debug('Tenant context set', [
+                        'tenant_id' => $tenant->id,
+                        'user_id' => $user->id,
+                        'ip' => $request->ip()
+                    ]);
+                } elseif ($tenant && !$tenant->isActive()) {
+                    // Tenant is suspended/inactive - log out user
+                    auth()->logout();
+                    return redirect()->route('login')
+                        ->with('error', 'Your organization account is not active. Please contact support.');
                 }
             }
         }

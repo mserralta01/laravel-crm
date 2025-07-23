@@ -4,6 +4,7 @@ namespace Webkul\WebForm\DataGrids;
 
 use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\TenantHelper;
 use App\DataGrids\TenantAwareDataGrid;
 
 class WebFormDataGrid extends TenantAwareDataGrid
@@ -13,7 +14,7 @@ class WebFormDataGrid extends TenantAwareDataGrid
      */
     public function prepareQueryBuilder(): Builder
     {
-        $queryBuilder = DB::table('web_forms')
+        $queryBuilder = TenantHelper::table('web_forms')
             ->addSelect(
                 'web_forms.id',
                 'web_forms.title',

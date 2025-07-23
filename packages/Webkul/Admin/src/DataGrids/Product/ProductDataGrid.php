@@ -4,6 +4,7 @@ namespace Webkul\Admin\DataGrids\Product;
 
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\TenantHelper;
 use Webkul\Tag\Repositories\TagRepository;
 use App\DataGrids\TenantAwareDataGrid;
 
@@ -16,7 +17,7 @@ class ProductDataGrid extends TenantAwareDataGrid
     {
         $tablePrefix = DB::getTablePrefix();
 
-        $queryBuilder = DB::table('products')
+        $queryBuilder = TenantHelper::table('products')
             ->leftJoin('product_inventories', 'products.id', '=', 'product_inventories.product_id')
             ->leftJoin('product_tags', 'products.id', '=', 'product_tags.product_id')
             ->leftJoin('tags', 'tags.id', '=', 'product_tags.tag_id')

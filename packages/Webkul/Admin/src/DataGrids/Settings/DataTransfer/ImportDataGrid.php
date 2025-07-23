@@ -4,6 +4,7 @@ namespace Webkul\Admin\DataGrids\Settings\DataTransfer;
 
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\TenantHelper;
 use App\DataGrids\TenantAwareDataGrid;
 
 class ImportDataGrid extends TenantAwareDataGrid
@@ -13,7 +14,7 @@ class ImportDataGrid extends TenantAwareDataGrid
      */
     public function prepareQueryBuilder(): Builder
     {
-        return DB::table('imports')
+        return TenantHelper::table('imports')
             ->select(
                 'id',
                 'state',

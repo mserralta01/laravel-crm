@@ -4,6 +4,7 @@ namespace Webkul\Admin\DataGrids\Settings;
 
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\TenantHelper;
 use App\DataGrids\TenantAwareDataGrid;
 
 class WarehouseDataGrid extends TenantAwareDataGrid
@@ -15,7 +16,7 @@ class WarehouseDataGrid extends TenantAwareDataGrid
      */
     public function prepareQueryBuilder(): Builder
     {
-        $queryBuilder = DB::table('warehouses')
+        $queryBuilder = TenantHelper::table('warehouses')
             ->leftJoin('product_inventories', 'warehouses.id', '=', 'product_inventories.warehouse_id')
             ->select(
                 'warehouses.id',

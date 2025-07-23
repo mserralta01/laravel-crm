@@ -4,6 +4,7 @@ namespace Webkul\Admin\DataGrids\Settings;
 
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\TenantHelper;
 use App\DataGrids\TenantAwareDataGrid;
 
 class PipelineDataGrid extends TenantAwareDataGrid
@@ -13,7 +14,7 @@ class PipelineDataGrid extends TenantAwareDataGrid
      */
     public function prepareQueryBuilder(): Builder
     {
-        $queryBuilder = DB::table('lead_pipelines')
+        $queryBuilder = TenantHelper::table('lead_pipelines')
             ->addSelect(
                 'lead_pipelines.id',
                 'lead_pipelines.name',

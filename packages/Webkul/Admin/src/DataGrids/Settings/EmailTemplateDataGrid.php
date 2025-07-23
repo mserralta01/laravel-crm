@@ -3,6 +3,7 @@
 namespace Webkul\Admin\DataGrids\Settings;
 
 use Illuminate\Support\Facades\DB;
+use App\Helpers\TenantHelper;
 use App\DataGrids\TenantAwareDataGrid;
 
 class EmailTemplateDataGrid extends TenantAwareDataGrid
@@ -12,7 +13,7 @@ class EmailTemplateDataGrid extends TenantAwareDataGrid
      */
     public function prepareQueryBuilder()
     {
-        $queryBuilder = DB::table('email_templates')
+        $queryBuilder = TenantHelper::table('email_templates')
             ->addSelect(
                 'email_templates.id',
                 'email_templates.name',

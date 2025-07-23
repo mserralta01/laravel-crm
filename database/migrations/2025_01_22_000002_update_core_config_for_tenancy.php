@@ -14,9 +14,14 @@ return new class extends Migration
     public function up()
     {
         if (Schema::hasTable('core_config')) {
+            // Check if modifications already done
+            if (Schema::hasColumn('core_config', 'tenant_id')) {
+                return;
+            }
+            
             Schema::table('core_config', function (Blueprint $table) {
                 // Add tenant_id column
-                $table->uuid('tenant_id')->nullable()->after('id');
+                $table->unsignedBigInteger('tenant_id')->nullable()->after('id');
                 $table->index('tenant_id');
                 
                 // Add is_global flag to identify which settings are global vs tenant-specific

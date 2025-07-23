@@ -3,6 +3,7 @@
 namespace Webkul\Admin\DataGrids\Settings\Marketing;
 
 use Illuminate\Support\Facades\DB;
+use App\Helpers\TenantHelper;
 use App\DataGrids\TenantAwareDataGrid;
 
 class EventDataGrid extends TenantAwareDataGrid
@@ -12,7 +13,7 @@ class EventDataGrid extends TenantAwareDataGrid
      */
     public function prepareQueryBuilder()
     {
-        $queryBuilder = DB::table('marketing_events')
+        $queryBuilder = TenantHelper::table('marketing_events')
             ->addSelect(
                 'marketing_events.id',
                 'marketing_events.name',

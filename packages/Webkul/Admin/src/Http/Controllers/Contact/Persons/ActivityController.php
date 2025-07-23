@@ -43,11 +43,24 @@ class ActivityController extends Controller
      */
     public function concatEmailAsActivities($personId, $activities)
     {
+        // Get current tenant ID for security
+        $tenantId = app()->bound('tenant.id') ? app('tenant.id') : null;
+        
+        if (!$tenantId) {
+            return $activities;
+        }
+        
         $emails = DB::table('emails as child')
             ->select('child.*')
             ->join('emails as parent', 'child.parent_id', '=', 'parent.id')
             ->where('parent.person_id', $personId)
-            ->union(DB::table('emails as parent')->where('parent.person_id', $personId))
+            ->where('child.tenant_id', $tenantId)
+            ->where('parent.tenant_id', $tenantId)
+            ->union(
+                DB::table('emails as parent')
+                    ->where('parent.person_id', $personId)
+                    ->where('parent.tenant_id', $tenantId)
+            )
             ->get();
 
         return $activities->concat($emails->map(function ($email) {

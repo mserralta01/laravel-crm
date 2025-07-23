@@ -62,6 +62,13 @@ return [
             'level'    => env('LOG_LEVEL', 'critical'),
         ],
 
+        'tenant_security' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/tenant-security.log'),
+            'level' => env('LOG_LEVEL', 'warning'),
+            'days' => 30,
+        ],
+
         'papertrail' => [
             'driver'       => 'monolog',
             'level'        => env('LOG_LEVEL', 'debug'),

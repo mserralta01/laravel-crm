@@ -4,6 +4,7 @@ namespace Webkul\Admin\DataGrids\Settings;
 
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\TenantHelper;
 use Illuminate\Support\Facades\Storage;
 use Webkul\DataGrid\DataGrid;
 
@@ -14,7 +15,7 @@ class UserDataGrid extends DataGrid
      */
     public function prepareQueryBuilder(): Builder
     {
-        $queryBuilder = DB::table('users')
+        $queryBuilder = TenantHelper::table('users')
             ->distinct()
             ->addSelect(
                 'id',

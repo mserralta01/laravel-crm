@@ -4,6 +4,7 @@ namespace Webkul\Admin\DataGrids\Lead;
 
 use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\TenantHelper;
 use Webkul\Lead\Repositories\PipelineRepository;
 use Webkul\Lead\Repositories\SourceRepository;
 use Webkul\Lead\Repositories\StageRepository;
@@ -48,7 +49,7 @@ class LeadDataGrid extends TenantAwareDataGrid
     {
         $tablePrefix = DB::getTablePrefix();
 
-        $queryBuilder = DB::table('leads')
+        $queryBuilder = TenantHelper::table('leads')
             ->addSelect(
                 'leads.id',
                 'leads.title',
